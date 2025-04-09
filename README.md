@@ -2,6 +2,11 @@
 # Smart Meal Planner Based on Dietary Preferences 🥗
 
 ## Overview 🌐
+## Live Demo 🚀
+
+You can try out the project live here: [Smart Meal Planner - Live Demo](https://smart-meal-planner-based-on-dietary.onrender.com/)
+
+Feel free to explore and test the app! 🥗🍲
 
 The **Smart Meal Planner** is an intelligent web application designed to help users plan meals based on their unique dietary preferences, health conditions, and specific fitness goals. By leveraging **Flask** and **Python**, this solution provides personalized meal plans, health-based recommendations, and interactive tools to support users on their journey to optimal health and wellness. 💪🍏
 

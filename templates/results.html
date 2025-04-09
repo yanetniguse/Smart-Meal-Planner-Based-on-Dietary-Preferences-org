@@ -471,7 +471,7 @@
     
   </head>
   <body>
-	  <div id="mealPlanContent">
+	
 
     <h3>Meal Plan:</h3>
     {% for day, meals in meal_plan.items() %}
@@ -487,69 +487,68 @@
         </div>
     {% endfor %}
 
-</div>
 		  
-    <div class="action-buttons no-print">
-  <button class="btn btn-primary" id="editBtn"><i class="fas fa-edit"></i>Edit</button>
-  <button class="btn btn-accent" id="copyBtn"><i class="fas fa-copy"></i>Copy to Clipboard</button>
-<button class="btn btn-success" id="downloadBtn">
-  <i class="fas fa-download"></i> Download
-</button>
+    <!-- Action Buttons -->
+  <div class="action-buttons">
+    <button onclick="exportToPDF()" class="btn btn-primary">
+      <i class="fas fa-file-pdf"></i> Export to PDF
+    </button>
+    <button onclick="downloadPlan()" class="btn btn-success">
+      <i class="fas fa-download"></i> Download Plan
+    </button>
+    <button onclick="copyToClipboard(event)" class="btn btn-accent">
+      <i class="fas fa-copy"></i> Copy to Clipboard
+    </button>
+  </div>
 
-  <button class="btn btn-primary" id="exportBtn"><i class="fas fa-file-export"></i>Export as .txt</button>
-</div>
+  <div class="footer-note">
+    <p>Need to make adjustments? <a href="#">Regenerate your meal plan</a> or <a href="#">contact our nutritionists</a> for personalized advice.</p>
+    <p>Remember to stay hydrated and adjust portion sizes according to your activity level.</p>
+  </div>
 
-
-
-    <a href="/">← Back</a>
-</div>
-
-	  <script>
-  const mealPlan = document.getElementById("mealPlanContent");
-
-  // Edit toggle
-  document.getElementById("editBtn").addEventListener("click", () => {
-    const editable = mealPlan.contentEditable === "true";
-    mealPlan.contentEditable = !editable;
-    mealPlan.style.border = editable ? "none" : "2px dashed var(--accent-color)";
-  });
-
-  // Copy to Clipboard
-  document.getElementById("copyBtn").addEventListener("click", () => {
-    const tempElement = document.createElement("textarea");
-    tempElement.value = mealPlan.innerText;
-    document.body.appendChild(tempElement);
-    tempElement.select();
-    document.execCommand("copy");
-    document.body.removeChild(tempElement);
-    alert("Meal plan copied to clipboard!");
-  });
-
- document.getElementById("downloadBtn").addEventListener("click", () => {
-      const element = document.getElementById("mealPlanContent");
-
-      const opt = {
+  <script>
+    function exportToPDF() {
+      const element = document.getElementById("plan-container");
+      const options = {
         margin: 0.5,
-        filename: 'meal-plan.pdf',
+        filename: 'nutriguide_meal_plan.pdf',
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2 },
         jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
       };
+      html2pdf().from(element).set(options).save();
+    }
 
-      html2pdf().from(element).set(opt).save();
-    });
+    function downloadPlan() {
+      const element = document.getElementById("plan-container");
+      const planText = element.innerText;
+      const blob = new Blob([planText], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = "nutriguide_meal_plan.txt";
+      a.click();
+      URL.revokeObjectURL(url);
+      alert('Meal plan downloaded successfully!');
+    }
 
+    function copyToClipboard(event) {
+      const element = document.getElementById("plan-container");
+      const range = document.createRange();
+      range.selectNode(element);
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
+      document.execCommand('copy');
+      window.getSelection().removeAllRanges();
 
-  // Export as .txt file
-  document.getElementById("exportBtn").addEventListener("click", () => {
-    const textContent = mealPlan.innerText;
-    const blob = new Blob([textContent], { type: "text/plain" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "meal-plan.txt";
-    a.click();
-  });
-</script>
+      const originalText = event.target.innerHTML;
+      event.target.innerHTML = '<i class="fas fa-check"></i> Copied!';
+      setTimeout(() => {
+        event.target.innerHTML = originalText;
+      }, 2000);
+    }
+  </script>
+
 
   </body>
   </html>

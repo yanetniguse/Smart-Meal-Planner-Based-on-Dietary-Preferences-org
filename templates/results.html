@@ -522,20 +522,19 @@
     alert("Meal plan copied to clipboard!");
   });
 
- // Download as PDF
-document.getElementById("downloadBtn").addEventListener("click", () => {
-  const element = document.getElementById("mealPlanContent");
+ document.getElementById("downloadBtn").addEventListener("click", () => {
+      const element = document.getElementById("mealPlanContent");
 
-  const opt = {
-    margin:       0.5,
-    filename:     'meal-plan.pdf',
-    image:        { type: 'jpeg', quality: 0.98 },
-    html2canvas:  { scale: 2 },
-    jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-  };
+      const opt = {
+        margin: 0.5,
+        filename: 'meal-plan.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+      };
 
-  html2pdf().from(element).set(opt).save();
-});
+      html2pdf().from(element).set(opt).save();
+    });
 
 
   // Export as .txt file

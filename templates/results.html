@@ -463,23 +463,44 @@
 
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script>
-        // Function to download PDF
-        function downloadPDF() {
-            fetch('/download_pdf', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ meal_plan: {{ meal_plan|tojson }} })
-            })
-            .then(res => res.blob())
-            .then(blob => {
-                const link = document.createElement('a');
-                link.href = window.URL.createObjectURL(blob);
-                link.download = "meal_plan.pdf";
-                link.click();
-            })
-            .catch(error => alert('Error downloading PDF: ' + error));
-        }
+        
+function downloadPlan() {
+          const element = document.getElementById("plan-container");
+          const planText = element.innerText;
+          const blob = new Blob([planText], { type: 'text/plain' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = "nutriguide_meal_plan.txt";
+          a.click();
+          URL.revokeObjectURL(url);
 
+          // Show feedback
+          alert('Meal plan downloaded successfully!');
+      }
+
+      function copyToClipboard() {
+          const element = document.getElementById("plan-container");
+          const range = document.createRange();
+          range.selectNode(element);
+          window.getSelection().removeAllRanges();
+          window.getSelection().addRange(range);
+          document.execCommand('copy');
+          window.getSelection().removeAllRanges();
+
+          // Show feedback
+          const originalText = event.target.innerHTML;
+          event.target.innerHTML = '<i class="fas fa-check"></i> Copied!';
+	  setTimeout(() => {
+	      event.target.innerHTML = originalText;
+	  }, 2000);
+      }
+
+      // Add animation class when page loads
+      document.addEventListener('DOMContentLoaded', function() {
+	  document.body.classList.add('loaded');
+      });
+      
         // Function to save edited meal plan
         async function saveEdits() {
             const editedPlan = {};
@@ -503,15 +524,6 @@
 
             const data = await res.json();
             alert(data.message);  // Display the response message
-        }
-
-        // Function to clear the meal plan
-        async function clearPlan() {
-            const confirmation = confirm("Are you sure you want to clear the meal plan?");
-            if (confirmation) {
-                await fetch('/clear_plan', { method: 'POST' });
-                location.reload();  // Reload page to reset meal plan
-            }
         }
     </script>
   </head>
@@ -539,9 +551,21 @@
         </div>
     {% endfor %}
 
-    <button onclick="downloadPDF()">Download PDF</button>
-    <button onclick="saveEdits()">Save Edits</button>
-    <button onclick="clearPlan()">Clear Plan</button>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <button onclick="saveEdits()">Save Edits</button>
+	<button onclick="window.print()" class="btn btn-primary">
+	  <i class="fas fa-file-pdf"></i> Export to PDF
+	</button>
+	<button onclick="downloadPlan()" class="btn btn-success">
+	  <i class="fas fa-download"></i> Download Plan
+	</button>
+	<button onclick="copyToClipboard()" class="btn btn-accent">
+	  <i class="fas fa-copy"></i> Copy to Clipboard
+	</button>
+      </div>
+
 
     <a href="/">← Back</a>
 </div>

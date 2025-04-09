@@ -332,10 +332,11 @@
 	  </label>
 	  <select class="form-select" id="meals_per_day" name="meals_per_day" required>
 	    <option value="" disabled selected>Select number of meals</option>
+	    <option value="1">3 meals (Breakfast, Lunch, Dinner)</option>
+	    <option value="2">3 meals (Breakfast, Lunch, Dinner)</option>
 	    <option value="3">3 meals (Breakfast, Lunch, Dinner)</option>
 	    <option value="4">4 meals (+ Snack)</option>
 	    <option value="5">5 meals (+ 2 Snacks)</option>
-	    <option value="6">6 meals (Frequent small meals)</option>
 	  </select>
 	</div>
 
@@ -343,16 +344,11 @@
 	  <label for="religion" class="form-label">
 	    <i class="fas fa-praying-hands"></i> Religious Dietary Restrictions
 	  </label>
-	  <select class="form-select" id="religion" name="religion">
-	    <option value="none" selected>None</option>
-	    <option value="halal">Halal</option>
-	    <option value="kosher">Kosher</option>
-	    <option value="hindu">Hindu (no beef)</option>
-	    <option value="buddhist">Buddhist (vegetarian)</option>
-	    <option value="jain">Jain (strict vegetarian, no root veggies)</option>
-	    <option value="christian">Christian (Lenten, no meat Fridays)</option>
-	    <option value="other">Other</option>
-	  </select>
+	   <select name="religion">
+                {% for r in religions %}
+                    <option value="{{ r }}">{{ r }}</option>
+                {% endfor %}
+            </select><br>
 	</div>
 
 	<div class="mb-4 form-group">
@@ -367,15 +363,16 @@
 	  <label for="diet_type" class="form-label">
 	    <i class="fas fa-seedling"></i> Diet Type
 	  </label>
-	  <select class="form-select" id="diet_type" name="diet_type">
-	    <option value="balanced" selected>Balanced</option>
+	  <select class="form-select" id="diet_type" name="preferences">
+	    <option value="gluten-free" selected>Gluten-free</option>
 	    <option value="vegetarian">Vegetarian</option>
 	    <option value="vegan">Vegan</option>
 	    <option value="keto">Keto</option>
 	    <option value="paleo">Paleo</option>
-	    <option value="mediterranean">Mediterranean</option>
-	    <option value="low_carb">Low Carb</option>
-	    <option value="low_fat">Low Fat</option>
+	    <option value="dairy-free">Dairy-free</option>
+	    <option value="low-fat">Low fat</option>
+	    <option value="diabetic-friendly">Diabetic-friendly</option>
+	    <option value="nut-free">Nut-free</option>
 	  </select>
 	</div>
 
@@ -383,7 +380,7 @@
 	  <label for="health_considerations" class="form-label">
 	    <i class="fas fa-heartbeat"></i> Health Considerations
 	  </label>
-	  <textarea class="form-control" id="health_considerations" name="health_considerations" rows="3" placeholder="e.g., diabetes, high blood pressure, pregnancy"></textarea>
+	  <textarea class="form-control" id="health_considerations" name="other_notes" rows="3" placeholder="e.g., pregnancy, athletic training, diabetes, IBS, etc."></textarea>
 	</div>
 
 	<div class="d-grid gap-2 form-group">

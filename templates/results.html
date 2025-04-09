@@ -1,0 +1,91 @@
+<!-- templates/results.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your Meal Plan</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script>
+        // Function to download PDF
+        function downloadPDF() {
+            fetch('/download_pdf', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ meal_plan: {{ meal_plan|tojson }} })
+            })
+            .then(res => res.blob())
+            .then(blob => {
+                const link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = "meal_plan.pdf";
+                link.click();
+            })
+            .catch(error => alert('Error downloading PDF: ' + error));
+        }
+
+        // Function to save edited meal plan
+        async function saveEdits() {
+            const editedPlan = {};
+            document.querySelectorAll('.day').forEach(dayDiv => {
+                const day = dayDiv.dataset.day;
+                editedPlan[day] = [];
+                dayDiv.querySelectorAll('.meal').forEach(mealInput => {
+                    editedPlan[day].push({
+                        name: mealInput.value,
+                        nutrition: '',  // You can extend this if you want to track nutrition
+                        link: ''        // Same for the recipe link if needed
+                    });
+                });
+            });
+
+            const res = await fetch('/edit', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ meal_plan: editedPlan })
+            });
+
+            const data = await res.json();
+            alert(data.message);  // Display the response message
+        }
+
+        // Function to clear the meal plan
+        async function clearPlan() {
+            const confirmation = confirm("Are you sure you want to clear the meal plan?");
+            if (confirmation) {
+                await fetch('/clear_plan', { method: 'POST' });
+                location.reload();  // Reload page to reset meal plan
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <h1>🥗 Your Personalized {{ days }}-Day Meal Plan</h1>
+    <p><strong>Preferences:</strong> {{ preferences | join(', ') }}</p>
+    <p><strong>Allergies or Dislikes:</strong> {{ allergies }}</p>
+    <p><strong>Religion:</strong> {{ religion | join(', ') }}</p>
+    <p><strong>Raw Food?</strong> {{ raw_food }}</p>
+    <p><strong>On Diet?</strong> {{ on_diet }}</p>
+    <p><strong>Other Notes:</strong> {{ other_notes }}</p>
+
+    <h3>Meal Plan:</h3>
+    {% for day, meals in meal_plan.items() %}
+        <div class="day" data-day="{{ day }}">
+            <h4>{{ day }}</h4>
+            <ul>
+                {% for meal in meals %}
+                    <li>
+                        <input type="text" class="meal" value="{{ meal.name }}" placeholder="Meal Name">
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endfor %}
+
+    <button onclick="downloadPDF()">Download PDF</button>
+    <button onclick="saveEdits()">Save Edits</button>
+    <button onclick="clearPlan()">Clear Plan</button>
+
+    <a href="/">← Back</a>
+</div>
+</body>
+</html>

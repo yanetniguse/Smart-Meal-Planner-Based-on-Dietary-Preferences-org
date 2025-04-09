@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <title>Personalized Meal Planner</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    
+</head>
+<body>
+    <div class="container">
+        <h1>🍴 Smart Meal Planner</h1>
+        <form method="POST" action="/results">
+            <label>Number of Days (1–7):</label>
+            <input type="number" name="days" min="1" max="7" required><br>
+    
+            <label>Meals per Day:</label>
+            <input type="number" name="meals_per_day" min="1" max="5" required><br>
+    
+            <label>Religious Restriction:</label>
+            <select name="religion">
+                {% for r in religions %}
+                    <option value="{{ r }}">{{ r }}</option>
+                {% endfor %}
+            </select><br>
+    
+            <label>Allergies or foods you don't like:</label>
+            <input type="text" name="allergies"><br>
+    
+            <label>Are you on a raw food diet?</label>
+            <select name="raw_food">
+                <option value="no">No</option>
+                <option value="yes">Yes</option>
+            </select><br>
+    
+            <label><strong>Other health or lifestyle considerations:</strong></label><br>
+            <textarea name="other_notes" rows="3" cols="40" placeholder="e.g., pregnancy, athletic training, diabetes, IBS, etc."></textarea><br><br>
+    
+            <button type="submit">Generate Plan</button>
+        </form>
+        
+    </div>
+    <div class="container">
+        <div class="left-section">
+            <h3>BMI & Health Status</h3>
+            <input type="number" id="weight" placeholder="Weight (kg)">
+            <input type="number" id="height" placeholder="Height (cm)">
+            <button onclick="calculateBMI()">Calculate BMI</button>
+            <p id="bmi-result"></p>
+            <div id="recommendation-output"></div>
+            <div id="action-plan" style="margin-top: 10px; color: #2b4;">
+                <!-- Action plan will be inserted here -->
+            </div>
+        </div>
+    
+        <div class="middle-section">
+            <h3>Recommendations Based on Your Goal</h3>
+            <p id="recommendation-output"></p>
+        </div>
+    
+        <div class="right-section">
+            <h3>Select Your Goal</h3>
+            <label for="goal">What do you want to achieve?</label>
+            <select id="goal" onchange="showImageBasedOnGoal()"> <!-- Call the function when the selection changes -->
+                <option value="muscle_gain">Build Muscle 💪</option>
+                <option value="weight_loss">Lose Weight 🏋️</option>
+                <option value="hair_growth">Grow Hair ✨</option>
+                <option value="energy_boost">Increase Energy ⚡</option>
+            </select>
+            <button onclick="getRecommendations()">Get Recommendations</button>
+            <div id="image-container">
+                <!-- Image will appear here based on the selected goal -->
+            </div>
+        </div>
+        
+        <div class="goal-recommendations">
+            <h3>Personalized Recommendations</h3>
+            <p id="goal-recommendation"></p>
+        </div>
+        
+        <script>
+            function showImageBasedOnGoal() {
+        const goal = document.getElementById("goal").value;
+        const imageContainer = document.getElementById("image-container");
+        let imageUrl = "";
+
+        // Change image URL based on the goal
+        switch (goal) {
+            case "muscle_gain":
+                imageUrl = "https://i.pinimg.com/736x/7e/6a/85/7e6a850f3baa2663e30c6234b4d3ef44.jpg"; // Image for muscle gain
+                break;
+            case "weight_loss":
+                imageUrl = "https://i.pinimg.com/736x/87/ce/91/87ce915a572de0543f164977bbd591aa.jpg"; // Placeholder for weight loss
+                break;
+            case "hair_growth":
+                imageUrl = "https://i.pinimg.com/736x/92/87/e7/9287e7206bfff8ca25762d53b9409508.jpg"; // Placeholder for hair growth
+                break;
+            case "energy_boost":
+                imageUrl = "https://i.pinimg.com/736x/fb/48/bb/fb48bb319ae14955fd13d0fefd990448.jpg"; // Placeholder for energy boost
+                break;
+            default:
+                imageUrl = ""; // no image for default
+        }
+
+        // Display the image if the URL is available
+        if (imageUrl) {
+            imageContainer.innerHTML = `<img src="${imageUrl}" alt="${goal}" style="width: 100%; border-radius: 8px;">`;
+        } else {
+            imageContainer.innerHTML = ""; // Clear image container if no image URL
+        }
+    }
+
+    // Optional: You can also trigger the image change when the button is clicked.
+    document.querySelector('button').addEventListener('click', showImageBasedOnGoal);
+
+        </script>
+    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+       
+    </div>
+    
+<script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
+<script>
+    function getRecommendations() {
+        const goal = document.getElementById('goal').value;
+
+        fetch('/goal_recommendations', {
+            method: 'POST',
+            body: JSON.stringify({ goal: goal }),
+            headers: { 'Content-Type': 'application/json' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('goal-recommendation').innerHTML =
+                `<strong>${data.title}:</strong><br> ${data.description}<br><strong>Suggested Foods:</strong> ${data.foods}`;
+        });
+    }
+
+    function calculateBMI() {
+        const weight = parseFloat(document.getElementById('weight').value);
+        const height = parseFloat(document.getElementById('height').value) / 100;
+    
+        if (!weight || !height) {
+            alert("Please enter weight and height to calculate BMI.");
+            return;
+        }
+    
+        const bmi = (weight / (height * height)).toFixed(1);
+        let status = "";
+        let actionPlan = "";
+    
+        if (bmi < 18.5) {
+            status = "Underweight";
+            actionPlan = `
+                <ul>
+                    <li>Increase calorie intake with nutrient-rich foods (nuts, avocados, dairy).</li>
+                    <li>Include strength training to build muscle mass.</li>
+                    <li>Eat more frequently and add healthy snacks.</li>
+                </ul>
+            `;
+        } else if (bmi >= 18.5 && bmi <= 24.9) {
+            status = "Healthy Weight";
+            actionPlan = `
+                <ul>
+                    <li>Maintain a balanced diet with fruits, vegetables, proteins, and whole grains.</li>
+                    <li>Engage in regular physical activity (30 mins/day).</li>
+                    <li>Monitor weight periodically to maintain range.</li>
+                </ul>
+            `;
+        } else if (bmi >= 25 && bmi <= 29.9) {
+            status = "Overweight";
+            actionPlan = `
+                <ul>
+                    <li>Reduce sugar and processed food intake.</li>
+                    <li>Increase fiber-rich foods (greens, legumes).</li>
+                    <li>Include at least 150 mins of moderate aerobic activity per week.</li>
+                </ul>
+            `;
+        } else {
+            status = "Obese";
+            actionPlan = `
+                <ul>
+                    <li>Consult a dietitian for a personalized weight-loss plan.</li>
+                    <li>Adopt low-calorie, high-nutrient foods.</li>
+                    <li>Commit to daily exercise (aerobic + strength training).</li>
+                    <li>Track progress and seek support when needed.</li>
+                </ul>
+            `;
+        }
+    
+        document.getElementById('bmi-result').innerHTML = `Your BMI: <strong>${bmi}</strong> (${status})`;
+        document.getElementById('action-plan').innerHTML = `<strong>Action Plan:</strong> ${actionPlan}`;
+    
+        // Optional fetch for more data
+        fetch('/recommendations', {
+            method: 'POST',
+            body: JSON.stringify({ bmi: bmi, status: status }),
+            headers: { 'Content-Type': 'application/json' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('recommendation-output').innerHTML = `
+                <strong>Recommended Daily Calorie Intake:</strong> ${data.calories} kcal/day<br>
+                <strong>Suggested Foods:</strong> ${data.foods}
+            `;
+        });
+    }
+    
+    
+</script>
+
+
+
+    <!--Chat Bot-->
+    <section class="chatbot-section">
+     
+
+        <!-- Chatbase chatbot integration -->
+        <script>
+            window.embeddedChatbotConfig = {
+                chatbotId: "JYT_XbQwOhNUCc_4Xbm9K", // Replace with your Chatbot ID
+                domain: "www.chatbase.co"
+            };
+        </script>
+        <script
+            src="https://www.chatbase.co/embed.min.js"
+            chatbotId="JYT_XbQwOhNUCc_4Xbm9K"  // Replace with your Chatbot ID
+            domain="www.chatbase.co"
+            defer>
+        </script>
+</body>
+</html>

@@ -1,91 +1,686 @@
-<!-- templates/results.html -->
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Your Meal Plan</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Personalized Meal Plan | NutriGuide</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      :root {
+          --primary-color: #6a1b9a;
+          --secondary-color: #9c27b0;
+          --accent-color: #ff9800;
+          --light-bg: #f9f9f9;
+          --text-color: #333;
+          --light-text: #666;
+          --success-color: #4caf50;
+      }
+
+      body {
+          background: linear-gradient(135deg, #f5f7fa 0%, #f3e5f5 100%);
+          font-family: 'Poppins', sans-serif;
+          color: var(--text-color);
+          min-height: 100vh;
+          padding: 30px 0;
+      }
+
+      .container {
+          max-width: 900px;
+          margin: auto;
+          padding: 30px;
+          background-color: #ffffff;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+          border-radius: 15px;
+          position: relative;
+          overflow: hidden;
+      }
+
+      .container::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 8px;
+          background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      }
+
+      h1, h2, h3, h4, h5 {
+          font-family: 'Playfair Display', serif;
+          font-weight: 600;
+          color: var(--primary-color);
+      }
+
+      h1 {
+          font-size: 2.5rem;
+          margin-bottom: 1rem;
+          position: relative;
+          display: inline-block;
+          text-align: center;
+          width: 100%;
+      }
+
+      h1::after {
+          content: '';
+          position: absolute;
+          bottom: -10px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 80px;
+          height: 4px;
+          background: var(--accent-color);
+          border-radius: 2px;
+      }
+
+      .intro-text {
+          font-size: 1.1rem;
+          color: var(--light-text);
+          margin-bottom: 2rem;
+          line-height: 1.6;
+          text-align: center;
+      }
+
+      /* Meal Day Cards */
+      .meal-day {
+          background-color: white;
+          border-radius: 12px;
+          padding: 25px;
+          margin-bottom: 25px;
+          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+          border-left: 4px solid var(--secondary-color);
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+          position: relative;
+          overflow: hidden;
+      }
+
+      .meal-day:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      }
+
+      .meal-day::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 4px;
+          height: 100%;
+          background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
+      }
+
+      .meal-day h5 {
+          color: var(--primary-color);
+          margin-bottom: 20px;
+          font-size: 1.4rem;
+          display: flex;
+          align-items: center;
+          position: relative;
+          padding-bottom: 10px;
+      }
+
+      .meal-day h5::after {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 50px;
+          height: 2px;
+          background-color: var(--accent-color);
+      }
+
+      .meal-day h5 i {
+          margin-right: 12px;
+          color: var(--accent-color);
+          font-size: 1.2em;
+      }
+
+      /* Meal Items */
+      .meal-item {
+          display: flex;
+          align-items: flex-start;
+          padding: 15px;
+          margin-bottom: 12px;
+          background-color: var(--light-bg);
+          border-radius: 8px;
+          transition: all 0.3s ease;
+          position: relative;
+          overflow: hidden;
+      }
+
+      .meal-item:hover {
+          background-color: #f0e6f6;
+          transform: translateX(5px);
+      }
+
+      .meal-item::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 3px;
+          height: 100%;
+          background-color: var(--accent-color);
+      }
+
+      .meal-icon {
+          font-size: 1.5rem;
+          margin-right: 15px;
+          color: var(--secondary-color);
+          min-width: 30px;
+          text-align: center;
+      }
+
+      .meal-content {
+          flex: 1;
+      }
+
+      .meal-title {
+          font-weight: 500;
+          margin-bottom: 5px;
+          color: var(--primary-color);
+      }
+
+      .meal-description {
+          font-size: 0.9rem;
+          color: var(--light-text);
+          line-height: 1.5;
+      }
+
+      .meal-time {
+          display: inline-block;
+          background-color: rgba(106, 27, 154, 0.1);
+          color: var(--primary-color);
+          padding: 3px 8px;
+          border-radius: 4px;
+          font-size: 0.8rem;
+          margin-top: 5px;
+          font-weight: 500;
+      }
+
+      /* Nutrition Info */
+      .nutrition-info {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+          margin-top: 10px;
+      }
+
+      .nutrition-tag {
+          background-color: rgba(255, 152, 0, 0.1);
+          color: var(--accent-color);
+          padding: 3px 8px;
+          border-radius: 4px;
+          font-size: 0.75rem;
+          font-weight: 500;
+      }
+
+      /* Action Buttons */
+      .action-buttons {
+          margin-top: 40px;
+          display: flex;
+          justify-content: center;
+          flex-wrap: wrap;
+          gap: 15px;
+      }
+
+      .btn {
+          padding: 12px 25px;
+          border-radius: 50px;
+          font-weight: 500;
+          transition: all 0.3s ease;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border: none;
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .btn i {
+          margin-right: 8px;
+      }
+
+      .btn-primary {
+          background-color: var(--primary-color);
+      }
+
+      .btn-primary:hover {
+          background-color: #5a147a;
+          transform: translateY(-2px);
+          box-shadow: 0 5px 15px rgba(106, 27, 154, 0.3);
+      }
+
+      .btn-success {
+          background-color: var(--success-color);
+      }
+
+      .btn-success:hover {
+          background-color: #3d8b40;
+          transform: translateY(-2px);
+          box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+      }
+
+      .btn-accent {
+          background-color: var(--accent-color);
+          color: white;
+      }
+
+      .btn-accent:hover {
+          background-color: #e68a00;
+          transform: translateY(-2px);
+          box-shadow: 0 5px 15px rgba(255, 152, 0, 0.3);
+      }
+
+      /* Summary Section */
+      .plan-summary {
+          background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+          color: white;
+          padding: 25px;
+          border-radius: 12px;
+          margin-bottom: 30px;
+          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .plan-summary h4 {
+          color: white;
+          margin-bottom: 20px;
+          display: flex;
+          align-items: center;
+      }
+
+      .plan-summary h4 i {
+          margin-right: 12px;
+      }
+
+      .summary-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 20px;
+      }
+
+      .summary-item {
+          background-color: rgba(255, 255, 255, 0.15);
+          padding: 15px;
+          border-radius: 8px;
+          backdrop-filter: blur(5px);
+      }
+
+      .summary-label {
+          font-size: 0.85rem;
+          opacity: 0.9;
+          margin-bottom: 5px;
+      }
+
+      .summary-value {
+          font-size: 1.4rem;
+          font-weight: 600;
+      }
+
+      /* Shopping List */
+      .shopping-list {
+          background-color: #f5f5f5;
+          border-radius: 12px;
+          padding: 25px;
+          margin-top: 30px;
+      }
+
+      .shopping-list h4 {
+          margin-bottom: 20px;
+          color: var(--primary-color);
+          display: flex;
+          align-items: center;
+      }
+
+      .shopping-list h4 i {
+          margin-right: 12px;
+          color: var(--accent-color);
+      }
+
+      .shopping-categories {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 20px;
+      }
+
+      .shopping-category {
+          background-color: white;
+          padding: 15px;
+          border-radius: 8px;
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .category-title {
+          font-weight: 500;
+          color: var(--secondary-color);
+          margin-bottom: 10px;
+          padding-bottom: 5px;
+          border-bottom: 1px solid #eee;
+      }
+
+      .shopping-items {
+          list-style-type: none;
+          padding-left: 0;
+      }
+
+      .shopping-items li {
+          padding: 5px 0;
+          display: flex;
+          align-items: center;
+      }
+
+      .shopping-items li::before {
+          content: '\f00c';
+          font-family: 'Font Awesome 6 Free';
+          font-weight: 900;
+          color: var(--success-color);
+          margin-right: 8px;
+          font-size: 0.8rem;
+      }
+
+      /* Footer */
+      .footer-note {
+          text-align: center;
+          margin-top: 40px;
+          color: var(--light-text);
+          font-size: 0.9rem;
+      }
+
+      .footer-note a {
+          color: var(--primary-color);
+          text-decoration: none;
+          font-weight: 500;
+      }
+
+      .footer-note a:hover {
+          text-decoration: underline;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+          .container {
+              padding: 20px;
+          }
+
+          h1 {
+              font-size: 2rem;
+          }
+
+          .meal-day {
+              padding: 20px 15px;
+          }
+
+          .action-buttons {
+              flex-direction: column;
+              gap: 10px;
+          }
+
+          .btn {
+              width: 100%;
+          }
+      }
+
+      /* Print Styles */
+      @media print {
+          body {
+              background: none;
+              padding: 0;
+          }
+
+          .container {
+              box-shadow: none;
+              padding: 0;
+          }
+
+          .action-buttons {
+              display: none;
+          }
+
+          .meal-day {
+              page-break-inside: avoid;
+          }
+      }
+
+      /* Animations */
+      @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+      }
+
+      .meal-day {
+          animation: fadeIn 0.5s ease forwards;
+          opacity: 0;
+      }
+
+      .meal-day:nth-child(1) { animation-delay: 0.1s; }
+      .meal-day:nth-child(2) { animation-delay: 0.2s; }
+      .meal-day:nth-child(3) { animation-delay: 0.3s; }
+      .meal-day:nth-child(4) { animation-delay: 0.4s; }
+      .meal-day:nth-child(5) { animation-delay: 0.5s; }
+      .meal-day:nth-child(6) { animation-delay: 0.6s; }
+      .meal-day:nth-child(7) { animation-delay: 0.7s; }
+    </style>
+  </head>
+  <body>
+    <div class="container" id="plan-container">
+      <h1><i class="fas fa-utensils"></i> Your Personalized Meal Plan</h1>
+      <p class="intro-text">We've carefully crafted this meal plan based on your preferences and nutritional needs. Enjoy delicious, balanced meals every day!</p>
+
+      <!-- Plan Summary -->
+      <div class="plan-summary">
+	<h4><i class="fas fa-chart-pie"></i> Plan Overview</h4>
+	<div class="summary-grid">
+	  <div class="summary-item">
+	    <div class="summary-label">Duration</div>
+	    <div class="summary-value">7 days</div>
+	  </div>
+	  <div class="summary-item">
+	    <div class="summary-label">Avg. Calories</div>
+	    <div class="summary-value">2,100 kcal</div>
+	  </div>
+	  <div class="summary-item">
+	    <div class="summary-label">Meals per day</div>
+	    <div class="summary-value">3-5</div>
+	  </div>
+	  <div class="summary-item">
+	    <div class="summary-label">Diet Type</div>
+	    <div class="summary-value">Balanced</div>
+	  </div>
+	</div>
+      </div>
+
+      <!-- Meal Days -->
+      {% for day in range(1, 8) %}
+      <div class="meal-day">
+	<h5><i class="fas fa-calendar-day"></i> Day {{ day }} - {{ ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][day-1] }}</h5>
+
+	<!-- Breakfast -->
+	<div class="meal-item">
+	  <div class="meal-icon">
+	    <i class="fas fa-egg"></i>
+	  </div>
+	  <div class="meal-content">
+	    <div class="meal-title">Breakfast</div>
+	    <div class="meal-description">Scrambled eggs with spinach and whole wheat toast, plus a side of mixed berries</div>
+	    <span class="meal-time">7:00-9:00 AM</span>
+	    <div class="nutrition-info">
+	      <span class="nutrition-tag">Protein: 25g</span>
+	      <span class="nutrition-tag">Carbs: 40g</span>
+	      <span class="nutrition-tag">Fat: 15g</span>
+	    </div>
+	  </div>
+	</div>
+
+	<!-- Morning Snack -->
+	<div class="meal-item">
+	  <div class="meal-icon">
+	    <i class="fas fa-apple-alt"></i>
+	  </div>
+	  <div class="meal-content">
+	    <div class="meal-title">Morning Snack</div>
+	    <div class="meal-description">Greek yogurt with almonds and a drizzle of honey</div>
+	    <span class="meal-time">Mid-morning</span>
+	    <div class="nutrition-info">
+	      <span class="nutrition-tag">Protein: 15g</span>
+	      <span class="nutrition-tag">Carbs: 20g</span>
+	      <span class="nutrition-tag">Fat: 10g</span>
+	    </div>
+	  </div>
+	</div>
+
+	<!-- Lunch -->
+	<div class="meal-item">
+	  <div class="meal-icon">
+	    <i class="fas fa-utensils"></i>
+	  </div>
+	  <div class="meal-content">
+	    <div class="meal-title">Lunch</div>
+	    <div class="meal-description">Grilled chicken salad with mixed greens, cherry tomatoes, cucumber, avocado, and balsamic vinaigrette</div>
+	    <span class="meal-time">12:00-1:30 PM</span>
+	    <div class="nutrition-info">
+	      <span class="nutrition-tag">Protein: 30g</span>
+	      <span class="nutrition-tag">Carbs: 25g</span>
+	      <span class="nutrition-tag">Fat: 20g</span>
+	    </div>
+	  </div>
+	</div>
+
+	<!-- Afternoon Snack -->
+	<div class="meal-item">
+	  <div class="meal-icon">
+	    <i class="fas fa-apple-alt"></i>
+	  </div>
+	  <div class="meal-content">
+	    <div class="meal-title">Afternoon Snack</div>
+	    <div class="meal-description">Hummus with carrot and celery sticks</div>
+	    <span class="meal-time">Afternoon</span>
+	    <div class="nutrition-info">
+	      <span class="nutrition-tag">Protein: 5g</span>
+	      <span class="nutrition-tag">Carbs: 15g</span>
+	      <span class="nutrition-tag">Fat: 8g</span>
+	    </div>
+	  </div>
+	</div>
+
+	<!-- Dinner -->
+	<div class="meal-item">
+	  <div class="meal-icon">
+	    <i class="fas fa-moon"></i>
+	  </div>
+	  <div class="meal-content">
+	    <div class="meal-title">Dinner</div>
+	    <div class="meal-description">Baked salmon with quinoa and roasted asparagus</div>
+	    <span class="meal-time">6:00-8:00 PM</span>
+	    <div class="nutrition-info">
+	      <span class="nutrition-tag">Protein: 35g</span>
+	      <span class="nutrition-tag">Carbs: 30g</span>
+	      <span class="nutrition-tag">Fat: 25g</span>
+	    </div>
+	  </div>
+	</div>
+      </div>
+      {% endfor %}
+
+      <!-- Shopping List -->
+      <div class="shopping-list">
+	<h4><i class="fas fa-shopping-basket"></i> Grocery Shopping List</h4>
+	<div class="shopping-categories">
+	  <div class="shopping-category">
+	    <div class="category-title">Proteins</div>
+	    <ul class="shopping-items">
+	      <li>Chicken breast (1kg)</li>
+	      <li>Salmon fillets (2)</li>
+	      <li>Eggs (12)</li>
+	      <li>Greek yogurt (500g)</li>
+	    </ul>
+	  </div>
+	  <div class="shopping-category">
+	    <div class="category-title">Vegetables</div>
+	    <ul class="shopping-items">
+	      <li>Spinach (200g)</li>
+	      <li>Broccoli (2 heads)</li>
+	      <li>Bell peppers (3)</li>
+	      <li>Carrots (5)</li>
+	    </ul>
+	  </div>
+	  <div class="shopping-category">
+	    <div class="category-title">Fruits</div>
+	    <ul class="shopping-items">
+	      <li>Bananas (6)</li>
+	      <li>Apples (4)</li>
+	      <li>Blueberries (150g)</li>
+	      <li>Avocados (2)</li>
+	    </ul>
+	  </div>
+	  <div class="shopping-category">
+	    <div class="category-title">Pantry</div>
+	    <ul class="shopping-items">
+	      <li>Quinoa (500g)</li>
+	      <li>Olive oil</li>
+	      <li>Almonds (200g)</li>
+	      <li>Whole wheat bread</li>
+	    </ul>
+	  </div>
+	</div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+	<button onclick="window.print()" class="btn btn-primary">
+	  <i class="fas fa-file-pdf"></i> Export to PDF
+	</button>
+	<button onclick="downloadPlan()" class="btn btn-success">
+	  <i class="fas fa-download"></i> Download Plan
+	</button>
+	<button onclick="copyToClipboard()" class="btn btn-accent">
+	  <i class="fas fa-copy"></i> Copy to Clipboard
+	</button>
+      </div>
+
+      <div class="footer-note">
+	<p>Need to make adjustments? <a href="#">Regenerate your meal plan</a> or <a href="#">contact our nutritionists</a> for personalized advice.</p>
+	<p>Remember to stay hydrated and adjust portion sizes according to your activity level.</p>
+      </div>
+    </div>
+
     <script>
-        // Function to download PDF
-        function downloadPDF() {
-            fetch('/download_pdf', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ meal_plan: {{ meal_plan|tojson }} })
-            })
-            .then(res => res.blob())
-            .then(blob => {
-                const link = document.createElement('a');
-                link.href = window.URL.createObjectURL(blob);
-                link.download = "meal_plan.pdf";
-                link.click();
-            })
-            .catch(error => alert('Error downloading PDF: ' + error));
-        }
+      function downloadPlan() {
+          const element = document.getElementById("plan-container");
+          const planText = element.innerText;
+          const blob = new Blob([planText], { type: 'text/plain' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = "nutriguide_meal_plan.txt";
+          a.click();
+          URL.revokeObjectURL(url);
 
-        // Function to save edited meal plan
-        async function saveEdits() {
-            const editedPlan = {};
-            document.querySelectorAll('.day').forEach(dayDiv => {
-                const day = dayDiv.dataset.day;
-                editedPlan[day] = [];
-                dayDiv.querySelectorAll('.meal').forEach(mealInput => {
-                    editedPlan[day].push({
-                        name: mealInput.value,
-                        nutrition: '',  // You can extend this if you want to track nutrition
-                        link: ''        // Same for the recipe link if needed
-                    });
-                });
-            });
+          // Show feedback
+          alert('Meal plan downloaded successfully!');
+      }
 
-            const res = await fetch('/edit', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ meal_plan: editedPlan })
-            });
+      function copyToClipboard() {
+          const element = document.getElementById("plan-container");
+          const range = document.createRange();
+          range.selectNode(element);
+          window.getSelection().removeAllRanges();
+          window.getSelection().addRange(range);
+          document.execCommand('copy');
+          window.getSelection().removeAllRanges();
 
-            const data = await res.json();
-            alert(data.message);  // Display the response message
-        }
+          // Show feedback
+          const originalText = event.target.innerHTML;
+          event.target.innerHTML = '<i class="fas fa-check"></i> Copied!';
+	  setTimeout(() => {
+	      event.target.innerHTML = originalText;
+	  }, 2000);
+      }
 
-        // Function to clear the meal plan
-        async function clearPlan() {
-            const confirmation = confirm("Are you sure you want to clear the meal plan?");
-            if (confirmation) {
-                await fetch('/clear_plan', { method: 'POST' });
-                location.reload();  // Reload page to reset meal plan
-            }
-        }
-    </script>
-</head>
-<body>
-<div class="container">
-    <h1>🥗 Your Personalized {{ days }}-Day Meal Plan</h1>
-    <p><strong>Preferences:</strong> {{ preferences | join(', ') }}</p>
-    <p><strong>Allergies or Dislikes:</strong> {{ allergies }}</p>
-    <p><strong>Religion:</strong> {{ religion | join(', ') }}</p>
-    <p><strong>Raw Food?</strong> {{ raw_food }}</p>
-    <p><strong>On Diet?</strong> {{ on_diet }}</p>
-    <p><strong>Other Notes:</strong> {{ other_notes }}</p>
+      // Add animation class when page loads
+      document.addEventListener('DOMContentLoaded', function() {
+	  document.body.classList.add('loaded');
+      });
+      </script>
 
-    <h3>Meal Plan:</h3>
-    {% for day, meals in meal_plan.items() %}
-        <div class="day" data-day="{{ day }}">
-            <h4>{{ day }}</h4>
-            <ul>
-                {% for meal in meals %}
-                    <li>
-                        <input type="text" class="meal" value="{{ meal.name }}" placeholder="Meal Name">
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-    {% endfor %}
-
-    <button onclick="downloadPDF()">Download PDF</button>
-    <button onclick="saveEdits()">Save Edits</button>
-    <button onclick="clearPlan()">Clear Plan</button>
-
-    <a href="/">← Back</a>
-</div>
-</body>
-</html>
+  </body>
+  </html>

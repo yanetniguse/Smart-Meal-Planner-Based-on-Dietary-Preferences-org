@@ -451,6 +451,65 @@
       </div>
     </div>
 
+	  
+    <div class="right-section">
+        <h3>Select Your Goal</h3>
+        <label for="goal">What do you want to achieve?</label>
+        <select id="goal" onchange="showImageBasedOnGoal()"> <!-- Call the function when the selection changes -->
+            <option value="muscle_gain">Build Muscle 💪</option>
+            <option value="weight_loss">Lose Weight 🏋️</option>
+            <option value="hair_growth">Grow Hair ✨</option>
+            <option value="energy_boost">Increase Energy ⚡</option>
+        </select>
+        <button onclick="getRecommendations()">Get Recommendations</button>
+        <div id="image-container">
+            <!-- Image will appear here based on the selected goal -->
+        </div>
+    </div>
+    
+    <div class="goal-recommendations">
+        <h3>Personalized Recommendations</h3>
+        <p id="goal-recommendation"></p>
+    </div>
+    
+    <script>
+        function showImageBasedOnGoal() {
+    const goal = document.getElementById("goal").value;
+    const imageContainer = document.getElementById("image-container");
+    let imageUrl = "";
+
+    // Change image URL based on the goal
+    switch (goal) {
+        case "muscle_gain":
+            imageUrl = "https://i.pinimg.com/736x/7e/6a/85/7e6a850f3baa2663e30c6234b4d3ef44.jpg"; // Image for muscle gain
+            break;
+        case "weight_loss":
+            imageUrl = "https://via.placeholder.com/400x300.png?text=Lose+Weight"; // Placeholder for weight loss
+            break;
+        case "hair_growth":
+            imageUrl = "https://via.placeholder.com/400x300.png?text=Hair+Growth"; // Placeholder for hair growth
+            break;
+        case "energy_boost":
+            imageUrl = "https://via.placeholder.com/400x300.png?text=Energy+Boost"; // Placeholder for energy boost
+            break;
+        default:
+            imageUrl = ""; // no image for default
+    }
+
+    // Display the image if the URL is available
+    if (imageUrl) {
+        imageContainer.innerHTML = `<img src="${imageUrl}" alt="${goal}" style="width: 100%; border-radius: 8px;">`;
+    } else {
+        imageContainer.innerHTML = ""; // Clear image container if no image URL
+    }
+}
+
+// Optional: You can also trigger the image change when the button is clicked.
+document.querySelector('button').addEventListener('click', showImageBasedOnGoal);
+
+    </script>
+</div>
+	  
     <!-- Chatbot -->
     <script>
       window.chatbaseConfig = {

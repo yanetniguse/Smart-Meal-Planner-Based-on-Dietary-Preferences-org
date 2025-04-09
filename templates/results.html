@@ -459,21 +459,19 @@
       .meal-day:nth-child(5) { animation-delay: 0.5s; }
       .meal-day:nth-child(6) { animation-delay: 0.6s; }
       .meal-day:nth-child(7) { animation-delay: 0.7s; }
+
+@media print {
+  .no-print {
+    display: none;
+  }
+}
+
     </style>
 
     
   </head>
   <body>
 	  <div id="mealPlanContent">
-
-    <div class="container" id="plan-container">
-     <h1>🥗 Your Personalized {{ days }}-Day Meal Plan</h1>
-    <p><strong>Preferences:</strong> {{ preferences | join(', ') }}</p>
-    <p><strong>Allergies or Dislikes:</strong> {{ allergies }}</p>
-    <p><strong>Religion:</strong> {{ religion | join(', ') }}</p>
-    <p><strong>Raw Food?</strong> {{ raw_food }}</p>
-    <p><strong>On Diet?</strong> {{ on_diet }}</p>
-    <p><strong>Other Notes:</strong> {{ other_notes }}</p>
 
     <h3>Meal Plan:</h3>
     {% for day, meals in meal_plan.items() %}
@@ -491,7 +489,7 @@
 
 </div>
 		  
-    <div class="action-buttons">
+    <div class="action-buttons no-print">
   <button class="btn btn-primary" id="editBtn"><i class="fas fa-edit"></i>Edit</button>
   <button class="btn btn-accent" id="copyBtn"><i class="fas fa-copy"></i>Copy to Clipboard</button>
   <button class="btn btn-success" id="downloadBtn"><i class="fas fa-download"></i>Download</button>
@@ -524,14 +522,21 @@
     alert("Meal plan copied to clipboard!");
   });
 
-  // Download as .html file
-  document.getElementById("downloadBtn").addEventListener("click", () => {
-    const blob = new Blob([mealPlan.innerHTML], { type: "text/html" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "meal-plan.html";
-    a.click();
-  });
+ // Download as PDF
+document.getElementById("downloadBtn").addEventListener("click", () => {
+  const element = document.getElementById("mealPlanContent");
+
+  const opt = {
+    margin:       0.5,
+    filename:     'meal-plan.pdf',
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2 },
+    jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+  };
+
+  html2pdf().from(element).set(opt).save();
+});
+
 
   // Export as .txt file
   document.getElementById("exportBtn").addEventListener("click", () => {

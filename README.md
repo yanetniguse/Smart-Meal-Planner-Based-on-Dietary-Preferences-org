@@ -98,6 +98,46 @@ python app.py
 Access the app at [http://127.0.0.1:5000/](http://127.0.0.1:5000/) 🌍
 
 ---
+## Screenshots 📸
+
+Here are some screenshots showcasing the key features of the **Smart Meal Planner** app:
+
+### 1. **Homepage** 🏠
+![Homepage](https://github.com/user-attachments/assets/5623adbe-ec12-4ddf-8249-8e7077c1ae2d)
+![Homepage](https://github.com/user-attachments/assets/3c3c06a8-069c-4d15-bc49-a2bbd8f2ae72)
+
+
+_A user-friendly landing page where users can enter their preferences and generate personalized meal plans._
+
+### 2. **Meal Plan Results** 🍽️
+![image](https://github.com/user-attachments/assets/ec6e5521-58f9-4c9d-8772-1a38d4916985)
+
+_The meal plan generated based on the user's dietary preferences, goals, and health conditions. Editable and downloadable._
+
+### 3. **BMI Calculator** 🧑‍⚕️
+![BMI Calculator](https://github.com/user-attachments/assets/f8598932-d48a-4e3f-8a27-4324ecf853f0)
+![BMI Calculator](https://github.com/user-attachments/assets/92caa430-95d9-4592-b05d-03893f3b2207)
+
+_A simple yet effective BMI calculator providing health recommendations based on the user's weight and height._
+
+### 4. **Goal-Based Nutrition** 🎯
+![Goal-Based Nutrition](https://github.com/user-attachments/assets/02b021dc-5d4f-4383-9d64-b1a67371b329)
+![Goal-Based Nutrition](https://github.com/user-attachments/assets/940505fd-a8c0-4a9f-83e5-f1d5e29f99bc)
+![Goal-Based Nutrition](https://github.com/user-attachments/assets/a3a845c9-33a7-47c6-a007-c4d8f6fe4401)
+![Goal-Based Nutrition](https://github.com/user-attachments/assets/7c1faefb-7bc7-4884-8696-23d7d0d78499)
+![Goal-Based Nutrition](https://github.com/user-attachments/assets/4ab0f5d0-703b-450c-b61a-a8a95165a9a3)
+
+_Providing personalized meal suggestions for specific goals like muscle gain or weight loss._
+
+### 5. **Interactive Chatbot** 🤖
+![Chatbot](https://github.com/user-attachments/assets/41df0aef-b9d0-4145-887a-cf5efd713178)
+![Chatbot](https://github.com/user-attachments/assets/4545b312-6b95-44c3-b40d-0bfd452e1a47)
+
+_An interactive chatbot that guides users through meal planning and answers dietary questions in real time._
+
+---
+
+*Note: Screenshots above are for demo purposes. Actual user experience may vary based on input preferences and goals.*
 
 ## Acknowledgments 🙌
 
@@ -131,9 +171,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 The **Smart Meal Planner** offers a **holistic approach** to meal planning, focusing on health, wellness, and personalized nutrition. By combining the latest technologies and a user-centered design, it provides a solution that stands out from the crowd, empowering users to make healthier decisions that align with their unique needs. 
 
 ```
-
-### Why This Version Works for You:
-- **Professional yet engaging**: The README captures the technical depth of your project while making it accessible and engaging with emojis and clear sections.
-- **Focus on value**: It highlights the problem, the comprehensive solution, and what makes your app stand out, which is key to impressing top tech recruiters.
-- **Clear Installation and Tech Details**: Perfect for developers and recruiters to quickly understand the setup and stack used.
-- **Acknowledgments**: Acknowledging mentorship and contributors in a professional yet humble way adds to the credibility.

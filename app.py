@@ -1,3 +1,4 @@
+# Import necessary libraries and modules
 from flask import Flask, render_template, request, jsonify, send_file, session
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
@@ -5,11 +6,15 @@ from datetime import timedelta
 import random
 import io
 
+# Initialize Flask app and configure session settings
 app = Flask(__name__, template_folder='templates')
 app.secret_key = 'mealplannersecret'
 app.permanent_session_lifetime = timedelta(hours=1)
 
 # ---------------------------- MOCK DATA ---------------------------- #
+# Mock data for meals, religious dietary rules, and recommendations
+
+# Meal data with nutrition information and links
 meal_data = {
     "Grilled Vegetable Bowl": {"nutrition": "200 kcal, 10g protein", "link": "https://example.com/veg-bowl"},
     "Vegan Buddha Bowl": {"nutrition": "350 kcal, 12g protein", "link": "https://example.com/buddha-bowl"},
@@ -21,6 +26,7 @@ meal_data = {
 }
 meal_pool = list(meal_data.keys())
 
+# Religious dietary restrictions
 religious_rules = {
     "None": [],
     "Judaism": ["pork", "shellfish"],
@@ -33,6 +39,7 @@ religious_rules = {
     "Sikhism": ["halal", "kosher"]
 }
 
+# Calorie recommendations based on weight status
 CALORIE_RECOMMENDATIONS = {
     "Underweight": {"calories": 2500, "foods": "Nuts, Avocados, Whole Grains, Protein-rich foods"},
     "Healthy Weight": {"calories": 2000, "foods": "Balanced diet with lean proteins, fruits, and vegetables"},
@@ -40,6 +47,7 @@ CALORIE_RECOMMENDATIONS = {
     "Obese": {"calories": 1500, "foods": "Leafy greens, Lean meat, Low-carb foods"}
 }
 
+# Goal-specific recommendations
 GOAL_RECOMMENDATIONS = {
     "muscle_gain": {
         "title": "💪 Muscle Building Plan",
@@ -64,6 +72,8 @@ GOAL_RECOMMENDATIONS = {
 }
 
 # ------------------------ UTILITY FUNCTIONS ------------------------ #
+# Helper functions for generating meal plans and calculating BMI/calorie goals
+
 def generate_varied_meal_plan(days, meals_per_day):
     meal_plan = {}
     used_meals = set()

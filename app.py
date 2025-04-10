@@ -15,6 +15,7 @@ app.permanent_session_lifetime = timedelta(hours=1)
 # Mock data for meals, religious dietary rules, and recommendations
 
 # Meal data with nutrition information and links
+#Proper meals have been used instead of ingredients to give a more resaoble output to user
 meal_data = {
     "Grilled Vegetable Bowl": {"nutrition": "200 kcal, 10g protein", "link": "https://example.com/veg-bowl"},
     "Vegan Buddha Bowl": {"nutrition": "350 kcal, 12g protein", "link": "https://example.com/buddha-bowl"},

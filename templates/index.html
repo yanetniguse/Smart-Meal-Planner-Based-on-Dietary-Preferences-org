@@ -316,6 +316,30 @@
     <div class="container">
       <h1><i class="fas fa-utensils"></i> Smart Meal Planner</h1>
       <p class="intro-text">Create your personalized nutrition plan in just a few clicks. Get customized meal recommendations based on your dietary preferences, restrictions, and health goals.</p>
+<!-- For Voice Input (Speech-to-Text) -->
+<input type="text" id="voiceInput" placeholder="Say something..." />
+<button onclick="startListening()">🎤 Speak</button>
+
+<!-- For Voice Output (Text-to-Speech) -->
+<p id="responseText">Your meal plan will appear here.</p>
+<button onclick="speakText()">🔊 Read</button>
+
+<script>
+function startListening() {
+    const recognition = new webkitSpeechRecognition() || new SpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.start();
+    recognition.onresult = function(event) {
+        document.getElementById('voiceInput').value = event.results[0][0].transcript;
+    };
+}
+
+function speakText() {
+    const text = document.getElementById('responseText').innerText;
+    const utterance = new SpeechSynthesisUtterance(text);
+    speechSynthesis.speak(utterance);
+}
+</script>
 
       <form method="POST" action="/results">
 	<div class="mb-4 form-group">
